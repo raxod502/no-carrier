@@ -64,17 +64,17 @@ object Main extends App with StrictLogging {
       issue.opNeverDelivered
     } }
     val totalClosed = opNeverDelivered.map { issue =>
-      if (closeOut(issue.issue, issue.elapsed.get)) 1 else 0
+      if (closeOut(issue.issue, issue.elapsed.get, args.label)) 1 else 0
     }.sum
     logger.info(s"Closed ${totalClosed} issues.")
     logger.info("Session complete; exiting.")
   }
 
-  def closeOut(issue: Issue, elapsed: Duration): Boolean = {
+  def closeOut(issue: Issue, elapsed: Duration, label: String): Boolean = {
     logger.info(s"OP never delivered on issue #${issue.number}. Going to close it out.")
     if (enabled) {
       val explanatoryComment =
-        s"""This issue is being closed automatically since it has a "${args.label}" label but hasn't had any activity in ${elapsed.toDays} days. But don't worry: if you have some information to help move the discussion along, just leave a comment and I'll re-open the issue.
+        s"""This issue is being closed automatically since it has a "${label}" label but hasn't had any activity in ${elapsed.toDays} days. But don't worry: if you have some information to help move the discussion along, just leave a comment and I'll re-open the issue.
            |
            |*(Comment generated automatically by [NO CARRIER](https://github.com/twbs/no-carrier) via [tidier](https://github.com/raxod502/tidier).)*
            |""".stripMargin
