@@ -74,15 +74,10 @@ object Main extends App with StrictLogging {
     logger.info(s"OP never delivered on issue #${issue.number}. Going to close it out.")
     if (enabled) {
       val explanatoryComment =
-        s"""Hey there!
+        s"""This issue is being closed automatically since it has a "${args.label}" label but hasn't had any activity in ${elapsed.toDays} days. But don't worry: if you have some information to help move the discussion along, just leave a comment and I'll re-open the issue.
            |
-           |We're automatically closing this issue since the original poster (or another commenter) hasn't yet responded to the question or request made to them ${elapsed.toDays} days ago. We therefore assume that the user has lost interest or resolved the problem on their own. Closed issues that remain inactive for a long period may get automatically locked.
-           |
-           |Don't worry though; if this is in error, let us know with a comment and we'll be happy to reopen the issue.
-           |
-           |Thanks!
-           |
-           |(*Please note that this is an [automated](https://github.com/twbs/no-carrier) comment.*)""".stripMargin
+           |*(Comment generated automatically by [NO CARRIER](https://github.com/twbs/no-carrier) via [tidier](https://github.com/raxod502/tidier).)*
+           |""".stripMargin
 
       val attempt = Try{ issue.comments.post(explanatoryComment) }.flatMap{ comment => {
         logger.info(s"Posted comment #${comment.number}")
