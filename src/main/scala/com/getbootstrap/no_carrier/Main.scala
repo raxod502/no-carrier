@@ -74,7 +74,7 @@ object Main extends App with StrictLogging {
     logger.info(s"OP never delivered on issue #${issue.number}. Going to close it out.")
     if (enabled) {
       val explanatoryComment =
-        s"""This issue is being closed automatically since it has a "${label}" label but hasn't had any activity in ${elapsed.toDays} days. But don't worry: if you have some information to help move the discussion along, just leave a comment and I'll re-open the issue.
+        s"""This thread is being closed automatically since it has a "${label}" label but hasn't had any activity in ${elapsed.toDays} days. But don't worry: if you have some information to help move the discussion along, just leave a comment and I'll re-open the thread.
            |
            |*(Comment generated automatically by [NO CARRIER](https://github.com/twbs/no-carrier) via [tidier](https://github.com/raxod502/tidier).)*
            |""".stripMargin
