@@ -11,27 +11,15 @@ class FancyIssue(val issue: Issue, val label: String, val timeout: Duration)(imp
   lazy val lastCommentedOnAt: Option[Instant] = issue.commentsIterable.lastOption.map{ _.smart.createdAt.toInstant }
   lazy val lastClosedAt: Option[Instant] = issue.smart.lastClosure.map{ _.smart.createdAt.toInstant }
   lazy val lastReopenedAt: Option[Instant] = issue.smart.lastReopening.map{ _.smart.createdAt.toInstant }
-  lazy val hasSubsequentComment: Boolean = (lastLabelledAt, lastCommentedOnAt) match {
-    case (Some(labeledAt), Some(commentedAt)) => labeledAt < commentedAt
-    case _ => false
-  }
-  lazy val wasClosedAfterLabelling: Boolean = (lastLabelledAt, lastClosedAt) match {
-    case (Some(labeledAt), Some(closedAt)) => labeledAt < closedAt
-    case _ => false
-  }
-  lazy val wasReopenedAfterLabelling: Boolean = (lastLabelledAt, lastReopenedAt) match {
-    case (Some(labeledAt), Some(reopenedAt)) => labeledAt < reopenedAt
-    case _ => false
-  }
-  lazy val opennessChangedAfterLabelling: Boolean = wasClosedAfterLabelling || wasReopenedAfterLabelling
-  lazy val elapsed: Option[Duration] = lastLabelledAt.map { Instant.now(clock) - _ }
+  lazy val lastActionedAt: Option[Instant] = Seq(lastLabelledAt, lastCommentedOnAt, lastClosedAt, lastReopenedAt).max
+  lazy val elapsed: Option[Duration] = lastActionedAt.map { Instant.now(clock) - _ }
   lazy val isPastDeadline: Boolean = {
     import DurationOrdering._
     elapsed.exists{ _ > timeout }
   }
   lazy val opNeverDelivered: Boolean = {
-    val res = issue.smart.isOpen && issue.labels.smart.contains(label) && isPastDeadline && !opennessChangedAfterLabelling && !hasSubsequentComment
-    print(".")
+    val res = issue.smart.isOpen && issue.labels.smart.contains(label) && isPastDeadline
+    println(s"will close: ${res}")
     res
   }
 }
