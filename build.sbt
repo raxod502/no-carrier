@@ -18,6 +18,8 @@ libraryDependencies += "ch.qos.logback" %  "logback-classic" % "1.1.2"
 
 libraryDependencies += "org.specs2" %% "specs2-core" % "3.8.4" % "test"
 
+libraryDependencies += "javax.xml.bind" % "jaxb-api" % "2.3.0"
+
 // Because jcabi-github:
 
 libraryDependencies += "com.google.code.findbugs" % "annotations" % "2.0.1"
